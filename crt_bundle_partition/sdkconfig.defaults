@@ -1,0 +1,8 @@
+# Full certificate list in two bundle partitions; the application embeds only the small
+# custom bundle from certs/ as a fallback
+CONFIG_MBEDTLS_CERTIFICATE_BUNDLE_DEFAULT_NONE=y
+CONFIG_MBEDTLS_CUSTOM_CERTIFICATE_BUNDLE=y
+CONFIG_MBEDTLS_CUSTOM_CERTIFICATE_BUNDLE_PATH="certs"
+CONFIG_CRT_BUNDLE_PARTITION=y
+CONFIG_PARTITION_TABLE_CUSTOM=y
+CONFIG_PARTITION_TABLE_CUSTOM_FILENAME="partitions_crt_bundle.csv"

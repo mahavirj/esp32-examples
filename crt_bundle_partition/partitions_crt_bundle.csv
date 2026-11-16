@@ -1,0 +1,7 @@
+# Name,       Type, SubType,   Offset, Size
+nvs,          data, nvs,       ,       0x6000,
+phy_init,     data, phy,       ,       0x1000,
+factory,      app,  factory,   ,       0x180000,
+# Two identical certificate bundle images: 32-byte header + bundle, padded to 4 KB, + signature sector
+crt_bundle_0, data, undefined, ,       0x20000,
+crt_bundle_1, data, undefined, ,       0x20000,

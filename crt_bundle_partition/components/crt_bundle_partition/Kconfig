@@ -1,0 +1,59 @@
+menu "Certificate bundle partition"
+
+    config CRT_BUNDLE_PARTITION
+        bool "Load the certificate bundle from a flash partition"
+        depends on MBEDTLS_CERTIFICATE_BUNDLE && !SECURE_SIGNED_APPS_ECDSA_SCHEME
+        help
+            Keep the full trusted root list in two identical data partitions, crt_bundle_0
+            (primary) and crt_bundle_1 (secondary), instead of the application image. The
+            partition table must contain both, see partitions_crt_bundle.csv.
+
+            At startup the primary partition is validated and used. If it is rejected the
+            secondary partition is tried, and if both are rejected the bundle embedded in
+            the application stays in use.
+
+            When the application is built with signed app verification (Secure Boot V2, or
+            signed apps without hardware Secure Boot), the bundle image is signed with the
+            application signing key and its signature is verified at every startup.
+            Otherwise only a CRC protects the image.
+
+            With flash encryption enabled, both partitions must be marked "encrypted" in
+            the partition table.
+
+    config CRT_BUNDLE_PARTITION_OTA
+        bool "Support over-the-air update of the certificate bundle partitions"
+        depends on CRT_BUNDLE_PARTITION
+        # ESP-IDF v6.1 name of the option; it is APP_UPDATE_SECURE_SIGNED_DATA_PARTITION from v6.2
+        select SECURE_SIGNED_DATA_PARTITION if CRT_BUNDLE_PARTITION_VERIFY_SIGNATURE
+        help
+            Adds crt_bundle_partition_ota(), which downloads a newer bundle image into the
+            secondary partition with esp_https_ota and then installs it in the primary one.
+
+            When the application is built with signed app verification, the signature of
+            the downloaded image is verified by esp_ota before the image is accepted
+            (CONFIG_SECURE_SIGNED_DATA_PARTITION is selected).
+
+    config CRT_BUNDLE_PARTITION_MIN_VERSION
+        int "Minimum accepted bundle version"
+        depends on CRT_BUNDLE_PARTITION
+        default 1
+        range 1 2147483647
+        help
+            Images with a lower version are rejected. Raise it in an application release
+            to stop older signed images from being replayed.
+
+    config CRT_BUNDLE_PARTITION_VERSION
+        int "Version of the bundle image built with the project"
+        depends on CRT_BUNDLE_PARTITION
+        default CRT_BUNDLE_PARTITION_MIN_VERSION
+        range CRT_BUNDLE_PARTITION_MIN_VERSION 2147483647
+        help
+            Monotonic version written into the header of the image generated at build time.
+            An over-the-air update is accepted only if its version is higher than the one in use.
+
+    config CRT_BUNDLE_PARTITION_VERIFY_SIGNATURE
+        bool
+        depends on CRT_BUNDLE_PARTITION && SECURE_SIGNED_ON_UPDATE
+        default y
+
+endmenu

@@ -1,0 +1,23 @@
+menu "Example Configuration"
+
+    config EXAMPLE_CRT_BUNDLE_UPGRADE_URL
+        string "Certificate bundle upgrade url endpoint"
+        depends on CRT_BUNDLE_PARTITION_OTA
+        default "https://192.168.0.3:8070/crt_bundle.bin"
+        help
+            URL of the server which hosts the certificate bundle partition image
+            (build/crt_bundle.bin of a build with a higher bundle version). The example
+            downloads it at startup and installs it in the certificate bundle partitions.
+
+    config EXAMPLE_CRT_BUNDLE_UPGRADE_URL_FROM_STDIN
+        bool
+        default y if EXAMPLE_CRT_BUNDLE_UPGRADE_URL = "FROM_STDIN"
+
+    config EXAMPLE_SKIP_COMMON_NAME_CHECK
+        bool "Skip server certificate CN fieldcheck"
+        depends on CRT_BUNDLE_PARTITION_OTA
+        default n
+        help
+            This allows you to skip the validation of the upgrade server certificate CN field.
+
+endmenu

@@ -1,0 +1,6 @@
+dependencies:
+  # Certificate data for the bundle partition image
+  espressif/esp_crt_bundle_data:
+    version: "^1.0.0"
+    rules:
+      - if: "$CONFIG{CRT_BUNDLE_PARTITION} == True"

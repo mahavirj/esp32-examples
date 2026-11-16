@@ -1,0 +1,7 @@
+# Sign the bundle image with the application signing key (Secure Boot V2 RSA scheme, without
+# hardware Secure Boot). The application verifies it at startup and on update.
+# Create the key first: espsecure generate-signing-key --version 2 --scheme rsa3072 signing_key.pem
+CONFIG_SECURE_SIGNED_APPS_NO_SECURE_BOOT=y
+CONFIG_SECURE_SIGNED_APPS_RSA_SCHEME=y
+CONFIG_SECURE_BOOT_BUILD_SIGNED_BINARIES=y
+CONFIG_SECURE_BOOT_SIGNING_KEY="signing_key.pem"
