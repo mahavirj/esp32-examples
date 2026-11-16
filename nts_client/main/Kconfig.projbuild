@@ -1,0 +1,22 @@
+menu "Example Configuration"
+
+    config EXAMPLE_NTS_KE_HOSTS
+        string "NTS-KE server host names"
+        default "nts.meta.com ptbtime1.ptb.de"
+        help
+            Host names of NTS key establishment servers (RFC 8915), separated by spaces.
+            The example starts with the first one and moves to the next when a server
+            stops working. Up to 8 names are used.
+            Each certificate must chain to a root in the ESP x509 certificate bundle.
+
+    config EXAMPLE_NTS_KE_PORT
+        int "NTS-KE server TCP port (same for all servers)"
+        range 1 65535
+        default 4460
+
+    config EXAMPLE_NTS_POLL_INTERVAL_S
+        int "Interval between time queries (seconds)"
+        range 1 86400
+        default 64
+
+endmenu
